@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ProgramModulesDevelopmentKursovik.Pages;
+using ProgramModulesDevelopmentKursovik.ViewModel;
 
 namespace ProgramModulesDevelopmentKursovik.Pages.Menu
 {
@@ -28,18 +29,8 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Menu
 
         private void ButtonMenu_Click(object sender, RoutedEventArgs e)
         {
-            Button clickedButton = sender as Button;
-            var parent = clickedButton.Parent;
-            for (int x = 0; x < VisualTreeHelper.GetChildrenCount(parent); x++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, x);
-                var control = child as Control;
-                if (control is Button)
-                {
-                    (control as Button).Foreground = Brushes.Black;
-                }
-            }
-            clickedButton.Foreground = Brushes.Red;
+            MenuHelper.SetStyleOfActiveMenuButton(sender);
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.ContentRequests();
         }
     }
 }

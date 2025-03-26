@@ -78,9 +78,9 @@ namespace ProgramModulesDevelopmentKursovik.Pages
                 MessageBox.Show("Регистрация успешно завершена", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
                 ApplicationData.AppFrame.frameMain.GoBack();
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при добавлении данных", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Ошибка при добавлении данных: " + ex.ToString(), "Уведомление", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ProgramModulesDevelopmentKursovik.Pages;
+using ProgramModulesDevelopmentKursovik.ViewModel;
 
 namespace ProgramModulesDevelopmentKursovik.Pages.Menu
 {
@@ -24,6 +25,12 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Menu
         public MenuManager()
         {
             InitializeComponent();
+        }
+
+        private void ButtonMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuHelper.SetStyleOfActiveMenuButton(sender);
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.ContentRequests();
         }
     }
 }
