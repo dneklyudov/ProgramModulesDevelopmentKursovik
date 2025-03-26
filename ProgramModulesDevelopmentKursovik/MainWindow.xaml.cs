@@ -28,7 +28,7 @@ namespace ProgramModulesDevelopmentKursovik
 
             this.DataContext = new LoggedUserVM();
 
-            AppConnect.model01 = new CompFirmEntities();
+            AppConnect.model01 = new CompFirmEntities1();
             AppFrame.frameMain = FrmMain;
             AppFrame.frameMenu = FrmMenu;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ProgramModulesDevelopmentKursovik.Pages;
+using ProgramModulesDevelopmentKursovik.ViewModel;
 
 namespace ProgramModulesDevelopmentKursovik.Pages.Menu
 {
@@ -28,18 +30,43 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Menu
 
         private void ButtonMenu_Click(object sender, RoutedEventArgs e)
         {
-            Button clickedButton = sender as Button;
-            var parent = clickedButton.Parent;
-            for (int x = 0; x < VisualTreeHelper.GetChildrenCount(parent); x++)
+            MenuHelper.SetStyleOfActiveMenuButton(sender);
+            if ((sender as Button).Content.ToString() == "Заявки на ремонт")
             {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, x);
-                var control = child as Control;
-                if (control is Button)
-                {
-                    (control as Button).Foreground = Brushes.Black;
-                }
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.ContentRequests();
             }
-            clickedButton.Foreground = Brushes.Red;
+            else if ((sender as Button).Content.ToString() == "Единицы измерения")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("EdIzm");
+            }
+            else if ((sender as Button).Content.ToString() == "Страны")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("Countries");
+            }
+            else if ((sender as Button).Content.ToString() == "Производители")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("Producers");
+            }
+            else if ((sender as Button).Content.ToString() == "Поставщики")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("Suppliers");
+            }
+            else if ((sender as Button).Content.ToString() == "Роли")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("Roles");
+            }
+            else if ((sender as Button).Content.ToString() == "Статусы платежей")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("PaymentState");
+            }
+            else if ((sender as Button).Content.ToString() == "Статусы заказов")
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("DoneStates");
+            }
+            else
+            {
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Empty();
+            }
         }
     }
 }

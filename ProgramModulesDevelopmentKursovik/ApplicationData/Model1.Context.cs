@@ -13,10 +13,10 @@ namespace ProgramModulesDevelopmentKursovik.ApplicationData
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class CompFirmEntities : DbContext
+    public partial class CompFirmEntities1 : DbContext
     {
-        public CompFirmEntities()
-            : base("name=CompFirmEntities")
+        public CompFirmEntities1()
+            : base("name=CompFirmEntities1")
         {
         }
     
@@ -39,7 +39,6 @@ namespace ProgramModulesDevelopmentKursovik.ApplicationData
         public virtual DbSet<Requests> Requests { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<Suppliers> Suppliers { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Users> Users { get; set; }
     }
 }

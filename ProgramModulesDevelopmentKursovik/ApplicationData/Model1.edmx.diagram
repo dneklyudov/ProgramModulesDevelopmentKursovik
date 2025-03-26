@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="91ed2791b7844b8289deec2f7701d201" Name="Diagram1">
+      <Diagram DiagramId="cb84e688baeb45a2ab1241204eb684e3" Name="Diagram1">
         <EntityTypeShape EntityType="CompFirmModel.Carts" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.CatItems" Width="1.5" PointX="3" PointY="2.875" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.CatPrices" Width="1.5" PointX="5.25" PointY="7" IsExpanded="true" />
@@ -19,7 +19,6 @@
         <EntityTypeShape EntityType="CompFirmModel.Requests" Width="1.5" PointX="6" PointY="19.25" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Roles" Width="1.5" PointX="1.5" PointY="26.625" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Suppliers" Width="1.5" PointX="0.75" PointY="12.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="CompFirmModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Users" Width="1.5" PointX="0.75" PointY="21.75" IsExpanded="true" />
         <AssociationConnector Association="CompFirmModel.FK_Carts_CatItems" ManuallyRouted="false" />
         <AssociationConnector Association="CompFirmModel.FK_Carts_Users" ManuallyRouted="false" />

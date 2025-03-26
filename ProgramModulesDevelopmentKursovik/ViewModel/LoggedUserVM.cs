@@ -83,6 +83,15 @@ namespace ProgramModulesDevelopmentKursovik.ViewModel
             }
         }
 
-
+        private String _spravochnikTitle;
+        public String SpravochnikTitle
+        {
+            get { return _spravochnikTitle; }
+            set
+            {
+                _spravochnikTitle = value;
+                OnPropertyChanged("SpravochnikTitle");
+            }
+        }
     }
 }

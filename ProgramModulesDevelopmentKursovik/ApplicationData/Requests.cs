@@ -18,7 +18,19 @@ namespace ProgramModulesDevelopmentKursovik.ApplicationData
         public string title { get; set; }
         public string description { get; set; }
         public System.DateTime datefrom { get; set; }
+        public string dateopen { 
+            get
+            {
+                return this.datefrom.Date.ToString("d");
+            }
+        }
         public System.DateTime dateto { get; set; }
+        public string dateclose {
+            get
+            {
+                return this.datefrom.Date.ToString("d"); 
+            }
+        }
         public int user_id { get; set; }
         public int donestate_id { get; set; }
         public int paymentstate_id { get; set; }

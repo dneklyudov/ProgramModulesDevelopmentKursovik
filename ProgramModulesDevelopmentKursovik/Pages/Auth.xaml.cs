@@ -29,6 +29,14 @@ namespace ProgramModulesDevelopmentKursovik.Pages
             InitializeComponent();
         }
 
+        private void SetLoggedUserValues(String fio, String role, object menu, object main)
+        {
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Fio = fio;
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Role = role;
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Menu = (Page)menu;
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = (Page)main;
+        }
+
         private void ButtonGo_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -48,24 +56,30 @@ namespace ProgramModulesDevelopmentKursovik.Pages
                     {
                         case 1:
                             // MessageBox.Show("Здравствуйте, " + userObj.name + " " + userObj.patronymic + "! Вы успешно авторизовались как администратор.", "Успешная авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Fio = userObj.name + " " + userObj.patronymic + " " + userObj.surname;
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Role = "Администратор";
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Menu = new Pages.Menu.MenuAdmin();
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Empty();
+                            SetLoggedUserValues(
+                                userObj.name + " " + userObj.patronymic + " " + userObj.surname, 
+                                "Администратор", 
+                                new Pages.Menu.MenuAdmin(), 
+                                new Pages.Content.Empty()
+                            );                                
                             break;
                         case 2:
                             // MessageBox.Show("Здравствуйте, " + userObj.name + " " + userObj.patronymic + "! Вы успешно авторизовались как менеджер.", "Успешная авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Fio = userObj.name + " " + userObj.patronymic + " " + userObj.surname;
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Role = "Менеджер";
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Menu = new Pages.Menu.MenuManager();
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Empty();
+                            SetLoggedUserValues(
+                                userObj.name + " " + userObj.patronymic + " " + userObj.surname,
+                                "Менеджер",
+                                new Pages.Menu.MenuManager(),
+                                new Pages.Content.Empty()
+                            );
                             break;
                         case 3:
                             // MessageBox.Show("Здравствуйте, " + userObj.name + " " + userObj.patronymic + "! Вы успешно авторизовались как заказчик.", "Успешная авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Fio = userObj.name + " " + userObj.patronymic + " " + userObj.surname;
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Role = "Заказчик";
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Menu = new Pages.Menu.MenuClient();
-                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Empty();
+                            SetLoggedUserValues(
+                                userObj.name + " " + userObj.patronymic + " " + userObj.surname,
+                                "Заказчик",
+                                new Pages.Menu.MenuClient(),
+                                new Pages.Content.Empty()
+                            );
                             break;
                         default:
                             MessageBox.Show("Данные не обнаружены", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Warning);
