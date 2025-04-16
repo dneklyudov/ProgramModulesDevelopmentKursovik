@@ -31,6 +31,13 @@ namespace ProgramModulesDevelopmentKursovik.ApplicationData
                 return this.datefrom.Date.ToString("d"); 
             }
         }
+        public string userinfo
+        {
+            get
+            {
+                return this.Users.name + " " + this.Users.patronymic + " " + this.Users.surname + " [" + this.Users.email + "]";
+            }
+        }
         public int user_id { get; set; }
         public int donestate_id { get; set; }
         public int paymentstate_id { get; set; }

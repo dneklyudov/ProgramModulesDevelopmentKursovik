@@ -13,6 +13,26 @@
             <Setter Property="BorderBrush" Value="Gainsboro" />
             <Setter Property="BorderThickness" Value="0,1,0,1" />
         </Style>
+
+            <DataTemplate x:Key="HeaderTemplateArrowUp">
+                <DockPanel>
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+                    <Path x:Name="arrow"
+           StrokeThickness = "1"                      
+           Fill            = "gray"
+           Data            = "M 5,10 L 15,10 L 10,5 L 5,10"/>
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="HeaderTemplateArrowDown">
+                <DockPanel>
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding }"/>
+                    <Path x:Name="arrow"
+              StrokeThickness = "1"                   
+              Fill            = "gray"
+              Data            = "M 5,5 L 10,10 L 15,5 L 5,5"/>
+                </DockPanel>
+            </DataTemplate>
+
     </Page.Resources>
 
     <Grid>
@@ -31,12 +51,14 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,15">
             <Button x:Name="BtnAdd" Height="30" Width="80" Margin="0">Добавить</Button>
             <TextBlock Text="Поиск:" Margin="50,7,5,0"/>
-            <TextBox x:Name="TextSearch" Margin="0,0,0,0" Height="30" Width="100" Padding="5,5,5,0"/>
-            <ComboBox x:Name="ComboFilter"  Width="Auto" Height="30" Margin="10,0,0,0" />
-            <ComboBox x:Name="ComboSort"  Margin="10,0,10,0" Height="30" Width="Auto"/>
+            <TextBox x:Name="TextSearch" Margin="0,0,0,0" Height="30" Width="100" Padding="5,5,5,0" TextChanged="TextSearch_TextChanged"/>
+            <ComboBox x:Name="ComboFilterByUser" Width="210" Height="30" Padding="10,6,5,0" Margin="10,0,0,0" SelectionChanged="ComboFilterByUser_SelectionChanged" />
+
+            <!--ComboBox x:Name="ComboFilter"  Width="Auto" Height="30" Margin="10,0,0,0" />
+            <ComboBox x:Name="ComboSort"  Margin="10,0,10,0" Height="30" Width="Auto"/-->
          </StackPanel>
 
-        <ListView x:Name="listRequests" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2">
+        <ListView x:Name="listRequests" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2" GridViewColumnHeader.Click="listRequestsHeader_Click" >
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=id}" Header="ID" Width="Auto"/>
@@ -54,7 +76,7 @@
                     <GridViewColumn DisplayMemberBinding="{Binding Path=description}" Header="Описание" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=dateopen}" Header="Дата открытия" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=dateclose}" Header="Дата закрытия" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Users.email}" Header="Пользователь" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=userinfo}" Header="Пользователь" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=DoneStates.title}" Header="Статус заявки" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=PaymentState.title}" Header="Статус оплаты" Width="Auto"/>
                 </GridView>
