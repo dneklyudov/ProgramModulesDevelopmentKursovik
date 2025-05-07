@@ -3,7 +3,10 @@ using ProgramModulesDevelopmentKursovik.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,62 +26,57 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Content
     /// </summary>
     public partial class Spravochnik : Page
     {
-        private string className;
+        private readonly string className;
 
         public Spravochnik(string className)
         {
             InitializeComponent();
-
             this.className = className;
-
             this.DataContext = (Application.Current.MainWindow as MainWindow).DataContext;
+            SetItemsSource();
+            SetTitle();
+        }
 
-            if (this.className == "DoneStates")
+        private void SetItemsSource()
+        {
+            switch (className)
             {
-                list.ItemsSource = ListDoneStates();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник статусов заказа";
-            }
-            else if (this.className == "EdIzm")
-            {
-                list.ItemsSource = ListEdIzm();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник единиц измерения";
-            }
-            else if (this.className == "Countries")
-            {
-                list.ItemsSource = ListCountries();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник стран";
-            }
-            else if (this.className == "Producers")
-            {
-                list.ItemsSource = ListProducers();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник производителей";
-            }
-            else if (this.className == "Suppliers")
-            {
-                list.ItemsSource = ListSuppliers();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник поставщиков";
-            }
-            else if (this.className == "Roles")
-            {
-                list.ItemsSource = ListRoles();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник ролей";
-            }
-            else if (this.className == "PaymentState")
-            {
-                list.ItemsSource = ListPaymentState();
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = "Справочник статусов оплаты";
+                case "DoneStates": list.ItemsSource = ListItems<DoneStates>(); break;
+                case "EdIzm": list.ItemsSource = ListItems<EdIzm>(); break;
+                case "Countries": list.ItemsSource = ListItems<Countries>(); break;
+                case "Producers": list.ItemsSource = ListItems<Producers>(); break;
+                case "Suppliers": list.ItemsSource = ListItems<Suppliers>(); break;
+                case "Roles": list.ItemsSource = ListItems<Roles>(); break;
+                case "PaymentStates": list.ItemsSource = ListItems<PaymentStates>(); break;
+                default: throw new ArgumentException("Unknown item type");
             }
         }
 
-        PaymentState[] ListPaymentState()
+        private void SetTitle()
+        {
+            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).SpravochnikTitle = GetTitle();
+        }
+
+        private string GetTitle()
+        {
+            switch (className)
+            {
+                case "DoneStates": return "Справочник статусов заказа";
+                case "EdIzm": return  "Справочник единиц измерения";
+                case "Countries": return "Справочник стран";
+                case "Producers": return "Справочник производителей"; 
+                case "Suppliers": return "Справочник поставщиков";
+                case "Roles": return "Справочник ролей";
+                case "PaymentStates": return "Справочник статусов оплаты";
+                default: throw new ArgumentException("Unknown item type");
+            }
+        }
+
+        T[] ListItems<T>()
         {
             try
             {
-                List<PaymentState> items = AppConnect.model01.PaymentState.ToList();
-                if (TextSearch != null)
-                {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
-                }
+                List<T> items = CreateList<T>();
                 return items.ToArray();
             }
             catch
@@ -88,292 +86,140 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Content
             }
         }
 
-        Roles[] ListRoles()
+        private List<T> CreateList<T>()
         {
-            try
+            switch (className)
             {
-                List<Roles> items = AppConnect.model01.Roles.ToList();
-                if (TextSearch != null)
-                {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
-                }
-                return items.ToArray();
-            }
-            catch
-            {
-                MessageBox.Show("Повторите попытку");
-                return null;
+                case "DoneStates": return (List<T>) FilterItems(AppConnect.model01.DoneStates.ToList());
+                case "EdIzm": return (List<T>) FilterItems(AppConnect.model01.EdIzm.ToList());
+                case "Countries": return (List<T>) FilterItems(AppConnect.model01.Countries.ToList());
+                case "Producers": return (List<T>) FilterItems(AppConnect.model01.Producers.ToList());
+                case "Suppliers": return (List<T>) FilterItems(AppConnect.model01.Suppliers.ToList());
+                case "Roles": return (List<T>) FilterItems(AppConnect.model01.Roles.ToList());
+                case "PaymentStates": return (List<T>) FilterItems(AppConnect.model01.PaymentStates.ToList());
+                default: throw new ArgumentException("Unknown item type");
             }
         }
 
-        Suppliers[] ListSuppliers()
+        private object FilterItems(object items)
         {
-            try
+            if (TextSearch != null)
             {
-                List<Suppliers> items = AppConnect.model01.Suppliers.ToList();
-                if (TextSearch != null)
+                switch (items)
                 {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<DoneStates> ds: return ds.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<EdIzm> ei: return ei.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<Countries> c: return c.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<Producers> p: return p.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<Suppliers> s: return s.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<Roles> r: return r.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    case List<PaymentStates> ps: return ps.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
+                    default: throw new ArgumentException("Unknown item type");
                 }
-                return items.ToArray();
             }
-            catch
-            {
-                MessageBox.Show("Повторите попытку");
-                return null;
-            }
-        }
-
-        Producers[] ListProducers()
-        {
-            try
-            {
-                List<Producers> items = AppConnect.model01.Producers.ToList();
-                if (TextSearch != null)
-                {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
-                }
-                return items.ToArray();
-            }
-            catch
-            {
-                MessageBox.Show("Повторите попытку");
-                return null;
-            }
-        }
-
-        Countries[] ListCountries()
-        {
-            try
-            {
-                List<Countries> items = AppConnect.model01.Countries.ToList();
-                if (TextSearch != null)
-                {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
-                }
-                return items.ToArray();
-            }
-            catch
-            {
-                MessageBox.Show("Повторите попытку");
-                return null;
-            }
-        }
-
-
-        EdIzm[] ListEdIzm()
-        {
-            try
-            {
-                List<EdIzm> items = AppConnect.model01.EdIzm.ToList();
-                if (TextSearch != null)
-                {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
-                }
-                return items.ToArray();
-            }
-            catch
-            {
-                MessageBox.Show("Повторите попытку");
-                return null;
-            }
-        }
-
-        DoneStates[] ListDoneStates()
-        {
-            try
-            {
-                List<DoneStates> items = AppConnect.model01.DoneStates.ToList();
-                if (TextSearch != null)
-                {
-                    items = items.Where(x => x.title.ToLower().Contains(TextSearch.Text.ToLower())).ToList();
-                }
-                return items.ToArray();
-            }
-            catch
-            {
-                MessageBox.Show("Повторите попытку");
-                return null;
-            }
+            return null;
         }
 
         private void TextSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (this.className == "DoneStates")
-            {
-                list.ItemsSource = ListDoneStates();
-            }
-            else if (this.className == "EdIzm")
-            {
-                list.ItemsSource = ListEdIzm();
-            }
-            else if (this.className == "Countries")
-            {
-                list.ItemsSource = ListCountries();
-            }
-            else if (this.className == "Producers")
-            {
-                list.ItemsSource = ListProducers();
-            }
-            else if (this.className == "Suppliers")
-            {
-                list.ItemsSource = ListSuppliers();
-            }
-            else if (this.className == "Roles")
-            {
-                list.ItemsSource = ListRoles();
-            }
-            else if (this.className == "PaymentState")
-            {
-                list.ItemsSource = ListPaymentState();
-            }
+            SetItemsSource();
         }
+
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            string header = "";
-
-            if (this.className == "DoneStates")
-            {
-                header = "Справочник статусов заказа. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((DoneStates)null, this.className, header));
-            }
-            else if (this.className == "EdIzm")
-            {
-                header = "Справочник единиц измерения. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((EdIzm)null, this.className, header));
-            }
-            else if (this.className == "Countries")
-            {
-                header = "Справочник стран. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((Countries)null, this.className, header));
-            }
-            else if (this.className == "Producers")
-            {
-                header = "Справочник производителей. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((Producers)null, this.className, header));
-            }
-            else if (this.className == "Suppliers")
-            {
-                header = "Справочник поставщиков. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((Suppliers)null, this.className, header));
-            }
-            else if (this.className == "Roles")
-            {
-                header = "Справочник ролей. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((Roles)null, this.className, header));
-            }
-            else if (this.className == "PaymentState")
-            {
-                header = "Справочник статусов оплаты. Добавление элемента";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((PaymentState)null, this.className, header));
-            }
+            string header = GetTitle() + ". Добавление элемента";
+            NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage(null, className, header));
         }
+
 
         private void BtnChangeInTable_Click(object sender, RoutedEventArgs e)
         {
-            int id = 0;
-            string header = "";
+            object datacontext = GetDataContext(sender);
+            int id = GetId(datacontext);
+            string header = GetTitle() + ". Изменение элемента [id=" + id + "]";
+            NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage(datacontext, className, header));
+        }
 
-            if (this.className == "DoneStates")
+        private object GetDataContext(object sender) 
+        {
+            switch (className)
             {
-                id = ((sender as Button).DataContext as DoneStates).id;
-                header = "Справочник статусов заказа. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as DoneStates, this.className, header));
-            }
-            else if (this.className == "EdIzm")
-            {
-                id = ((sender as Button).DataContext as EdIzm).id;
-                header = "Справочник единиц измерения. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as EdIzm, this.className, header));
-            }
-            else if (this.className == "Countries")
-            {
-                id = ((sender as Button).DataContext as Countries).id;
-                header = "Справочник стран. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as Countries, this.className, header));
-            }
-            else if (this.className == "Producers")
-            {
-                id = ((sender as Button).DataContext as Producers).id;
-                header = "Справочник производителей. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as Producers, this.className, header));
-            }
-            else if (this.className == "Suppliers")
-            {
-                id = ((sender as Button).DataContext as Suppliers).id;
-                header = "Справочник поставщиков. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as Suppliers, this.className, header));
-            }
-            else if (this.className == "Roles")
-            {
-                id = ((sender as Button).DataContext as Roles).id;
-                header = "Справочник ролей. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as Roles, this.className, header));
-            }
-            else if (this.className == "PaymentState")
-            {
-                id = ((sender as Button).DataContext as PaymentState).id;
-                header = "Справочник статусов оплаты. Изменение элемента [id=" + id + "]";
-                NavigationService.Navigate(new Pages.Content.AddEditSpravochnikPage((sender as Button).DataContext as PaymentState, this.className, header));
+                case "DoneStates": return (sender as Button).DataContext as DoneStates;
+                case "EdIzm": return (sender as Button).DataContext as EdIzm;
+                case "Countries": return (sender as Button).DataContext as Countries;
+                case "Producers": return (sender as Button).DataContext as Producers;
+                case "Suppliers": return (sender as Button).DataContext as Suppliers;
+                case "Roles": return (sender as Button).DataContext as Roles;
+                case "PaymentStates": return (sender as Button).DataContext as PaymentStates;
+                default: throw new ArgumentException("Unknown item type");
             }
         }
 
+        private int GetId(object datacontext)
+        {
+            switch (datacontext)
+            {
+                case DoneStates ds: return ds.id;
+                case EdIzm ei: return ei.id;
+                case Countries c: return c.id;
+                case Producers p: return p.id;
+                case Suppliers s: return s.id;
+                case Roles r: return r.id;
+                case PaymentStates ps: return ps.id;
+                default: throw new ArgumentException("Unknown item type");
+            }
+        }
+
+
+        private bool IsRecordRemoveable(object datacontext)
+        {
+            switch (datacontext)
+            {
+                case DoneStates ds: 
+                    if (AppConnect.model01.Requests.FirstOrDefault(x => x.donestate_id == ds.id) == null) return true; 
+                    return false;
+                case EdIzm ei: return true;
+                case Countries c: return true;
+                case Producers p: return true;
+                case Suppliers s: return true;
+                case Roles r: return true;
+                case PaymentStates ps:
+                    if (AppConnect.model01.Requests.FirstOrDefault(x => x.paymentstate_id == ps.id) == null) return true;
+                    return false;
+                default: throw new ArgumentException("Unknown item type");
+            }
+
+        }
+
+
         private void BtnRemoveInTable_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show($"Вы точно хотите удалить элемент (нужно проверить, что запись не используется в основной таблице и точно ли нужно удалить)?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (MessageBox.Show($"Вы точно хотите удалить элемент?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 try
                 {
-                    if (this.className == "DoneStates")
+                    object datacontext = GetDataContext(sender);
+
+                    if (!IsRecordRemoveable(datacontext))
                     {
-                        var itemForRemoving = (sender as Button).DataContext as DoneStates;
-                        AppConnect.model01.DoneStates.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListDoneStates();
+                        MessageBox.Show($"Невозможно удалить запись, потому что она используется в списке заявок", "Внимание", MessageBoxButton.OK);
+                        return;
                     }
-                    else if (this.className == "EdIzm")
+
+                    switch (datacontext)
                     {
-                        var itemForRemoving = (sender as Button).DataContext as EdIzm;
-                        AppConnect.model01.EdIzm.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListEdIzm();
+                        case DoneStates ds: AppConnect.model01.DoneStates.Remove(ds); break;
+                        case EdIzm ei: AppConnect.model01.EdIzm.Remove(ei); break;
+                        case Countries c: AppConnect.model01.Countries.Remove(c); break;
+                        case Producers p: AppConnect.model01.Producers.Remove(p); break;
+                        case Suppliers s: AppConnect.model01.Suppliers.Remove(s); break;
+                        case Roles r: AppConnect.model01.Roles.Remove(r); break;
+                        case PaymentStates ps: AppConnect.model01.PaymentStates.Remove(ps); break;
+                        default: throw new ArgumentException("Unknown item type");
                     }
-                    else if (this.className == "Countries")
-                    {
-                        var itemForRemoving = (sender as Button).DataContext as Countries;
-                        AppConnect.model01.Countries.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListCountries();
-                    }
-                    else if (this.className == "Producers")
-                    {
-                        var itemForRemoving = (sender as Button).DataContext as Producers;
-                        AppConnect.model01.Producers.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListProducers();
-                    }
-                    else if (this.className == "Suppliers")
-                    {
-                        var itemForRemoving = (sender as Button).DataContext as Suppliers;
-                        AppConnect.model01.Suppliers.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListSuppliers();
-                    }
-                    else if (this.className == "Roles")
-                    {
-                        var itemForRemoving = (sender as Button).DataContext as Roles;
-                        AppConnect.model01.Roles.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListRoles();
-                    }
-                    else if (this.className == "PaymentState")
-                    {
-                        var itemForRemoving = (sender as Button).DataContext as PaymentState;
-                        AppConnect.model01.PaymentState.Remove(itemForRemoving);
-                        AppConnect.model01.SaveChanges();
-                        list.ItemsSource = ListPaymentState();
-                    }
+                    AppConnect.model01.SaveChanges();
+                    SetItemsSource();
                 }
                 catch (Exception ex)
                 {

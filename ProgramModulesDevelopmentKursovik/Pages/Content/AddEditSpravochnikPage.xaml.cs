@@ -1,8 +1,12 @@
 ﻿using ProgramModulesDevelopmentKursovik.ApplicationData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ProgramModulesDevelopmentKursovik.Pages.Content
 {
@@ -24,189 +29,280 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Content
     public partial class AddEditSpravochnikPage : Page
     {
 
-        private DoneStates _objDoneStates = new DoneStates();
-        private EdIzm _objEdIzm = new EdIzm();
-        private Countries _objCountries = new Countries();
-        private Producers _objProducers = new Producers();
-        private Suppliers _objSuppliers = new Suppliers();
-        private Roles _objRoles = new Roles();
-        private PaymentState _objPaymentState = new PaymentState();
+        private object _currentItem;
+        private string _type;
+        private List<Field> _fields;
 
-        private object _obj = new object();
-        private string _type = "";
 
-        public AddEditSpravochnikPage(DoneStates selectedItem, string type, string header)
+        public AddEditSpravochnikPage(object selectedItem, string type, string header) 
         {
             InitializeComponent();
             _type = type;
-            if (selectedItem != null) _objDoneStates = selectedItem;
-            DataContext = _objDoneStates;
+            _currentItem = selectedItem ?? CreateNewItem(type);
+            _fields = DatabaseStructureHelper.GetTableFields(_type);
+            DataContext = _currentItem;
             this.txbHeader.Text = header;
+            CreateControls();
         }
 
-        public AddEditSpravochnikPage(EdIzm selectedItem, string type, string header)
+
+        private object CreateNewItem(string itemType)
         {
-            InitializeComponent();
-            _type = type;
-            if (selectedItem != null) _objEdIzm = selectedItem;
-            DataContext = _objEdIzm;
-            this.txbHeader.Text = header;
+            switch (itemType)
+            {
+                case "Requests":
+                    Requests request = new Requests();
+                    request.datefrom = DateTime.Now;
+                    request.DoneStates = (AppConnect.model01.DoneStates.ToList()).Where(x => x.id == 1).First();
+                    request.PaymentStates = (AppConnect.model01.PaymentStates.ToList()).Where(x => x.id == 1).First();
+                    return request;
+                case "DoneStates": return new DoneStates();
+                case "EdIzm": return new EdIzm();
+                case "Countries": return new Countries();
+                case "Producers": return new Producers();
+                case "Suppliers": return new Suppliers();
+                case "Roles": return new Roles();
+                case "PaymentStates": return new PaymentStates();
+                default: throw new ArgumentException("Unknown item type");
+            }
         }
 
-        public AddEditSpravochnikPage(Countries selectedItem, string type, string header)
-        {
-            InitializeComponent();
-            _type = type;
-            if (selectedItem != null) _objCountries = selectedItem;
-            DataContext = _objCountries;
-            this.txbHeader.Text = header;
-        }
-
-        public AddEditSpravochnikPage(Producers selectedItem, string type, string header)
-        {
-            InitializeComponent();
-            _type = type;
-            if (selectedItem != null) _objProducers = selectedItem;
-            DataContext = _objProducers;
-            this.txbHeader.Text = header;
-        }
-
-        public AddEditSpravochnikPage(Suppliers selectedItem, string type, string header)
-        {
-            InitializeComponent();
-            _type = type;
-            if (selectedItem != null) _objSuppliers = selectedItem;
-            DataContext = _objSuppliers;
-            this.txbHeader.Text = header;
-        }
-
-        public AddEditSpravochnikPage(Roles selectedItem, string type, string header)
-        {
-            InitializeComponent();
-            _type = type;
-            if (selectedItem != null) _objRoles = selectedItem;
-            DataContext = _objRoles;
-            this.txbHeader.Text = header;
-        }
-
-        public AddEditSpravochnikPage(PaymentState selectedItem, string type, string header)
-        {
-            InitializeComponent();
-            _type = type;
-            if (selectedItem != null) _objPaymentState = selectedItem;
-            DataContext = _objPaymentState;
-            this.txbHeader.Text = header;
-        }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Pages.Content.Spravochnik(_type));
+            if (_type == "Requests")
+                // TODO
+                NavigationService.Navigate(new Pages.Content.ContentRequests(1));
+            else
+            {
+                NavigationService.Navigate(new Pages.Content.Spravochnik(_type));
+            }
         }
+
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
+            if (Validate())
+            {
+                try
+                {
+                    SaveItemToDatabase();
+                    BtnCancel_Click(sender, e);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка сохранения", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+
+        private bool Validate()
+        {
             StringBuilder errors = new StringBuilder();
-
-            string title = "";
-
-            if (_type == "DoneStates")
+            foreach (Field field in _fields)
             {
-                title = _objDoneStates.title;
+                if (field.type == "string" || field.type == "date")
+                {
+                    object value = GetValueFromItemByReflection(_currentItem, field.name);
+                    if (field.require)
+                    {
+                        if (value == null || String.IsNullOrEmpty(value.ToString()) || String.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            errors.AppendLine("Заполните поле «" + field.title + "»");
+                        }
+                    }
+                }
+                if (field.type == "foreignkey")
+                {
+                    object value = GetValueFromItemByReflection(_currentItem, field.itemsource);
+                    if (value == null)
+                    {
+                        errors.AppendLine("Заполните поле «" + field.title + "»");
+                    }
+                }
             }
-            else if (_type == "EdIzm")
-            {
-                title = _objEdIzm.title;
-            }
-            else if (_type == "Countries")
-            {
-                title = _objCountries.title;
-            }
-            else if (_type == "Producers")
-            {
-                title = _objProducers.title;
-            }
-            else if (_type == "Suppliers")
-            {
-                title = _objSuppliers.title;
-            }
-            else if (_type == "Roles")
-            {
-                title = _objRoles.title;
-            }
-            else if (_type == "PaymentState")
-            {
-                title = _objPaymentState.title;
-            }
-
-            if (String.IsNullOrEmpty(title) || String.IsNullOrWhiteSpace(title))
-            {
-                errors.AppendLine("Заполните название");
-            }
-
             if (errors.Length > 0)
             {
-                MessageBox.Show(errors.ToString(), "Не заполнены обязательные поля", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                MessageBox.Show(errors.ToString(), "При сохранении записи произошли ошибки", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
+            return true;
+        }
 
-            if (_type == "DoneStates")
-            {
-                if (_objDoneStates.id == 0)
-                {
-                    AppConnect.model01.DoneStates.Add(_objDoneStates);
-                }
-            }
-            else if (_type == "EdIzm")
-            {
-                if (_objEdIzm.id == 0)
-                {
-                    AppConnect.model01.EdIzm.Add(_objEdIzm);
-                }
-            }
-            else if (_type == "Countries")
-            {
-                if (_objCountries.id == 0)
-                {
-                    AppConnect.model01.Countries.Add(_objCountries);
-                }
-            }
-            else if (_type == "Producers")
-            {
-                if (_objProducers.id == 0)
-                {
-                    AppConnect.model01.Producers.Add(_objProducers);
-                }
-            }
-            else if (_type == "Suppliers")
-            {
-                if (_objSuppliers.id == 0)
-                {
-                    AppConnect.model01.Suppliers.Add(_objSuppliers);
-                }
-            }
-            else if (_type == "Roles")
-            {
-                if (_objRoles.id == 0)
-                {
-                    AppConnect.model01.Roles.Add(_objRoles);
-                }
-            }
-            else if (_type == "PaymentState")
-            {
-                if (_objPaymentState.id == 0)
-                {
-                    AppConnect.model01.PaymentState.Add(_objPaymentState);
-                }
-            }
 
-            try
+        private object GetValueFromItemByReflection(object item, string field)
+        {
+            object value = null;
+            switch (item)
             {
-                AppConnect.model01.SaveChanges();
-                BtnCancel_Click(sender, e);
+                case Requests re: value = re.GetType().GetProperty(field).GetValue(re); break;
+                case DoneStates ds: value = ds.GetType().GetProperty(field).GetValue(ds); break;
+                case EdIzm ei: value = ei.GetType().GetProperty(field).GetValue(ei); break;
+                case Countries c: value = c.GetType().GetProperty(field).GetValue(c); break;
+                case Producers p: value = p.GetType().GetProperty(field).GetValue(p); break;
+                case Suppliers s: value = s.GetType().GetProperty(field).GetValue(s); break;
+                case Roles r: value = r.GetType().GetProperty(field).GetValue(r); break;
+                case PaymentStates ps: value = ps.GetType().GetProperty(field).GetValue(ps); break;
+                default: throw new ArgumentException("Unknown item type");
             }
-            catch (Exception ex)
+            return value;
+        }
+
+
+        private void SaveItemToDatabase()
+        {
+            var model = AppConnect.model01;
+            var id = GetValueFromItemByReflection(_currentItem, "id");
+            if ((int)id == 0)
             {
-                MessageBox.Show(ex.Message.ToString(), "При сохранении произошла ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                switch (_currentItem)
+                {
+                    case Requests re: model.Requests.Add(re); break;
+                    case DoneStates ds: model.DoneStates.Add(ds); break;
+                    case EdIzm ei: model.EdIzm.Add(ei); break;
+                    case Countries c: model.Countries.Add(c); break;
+                    case Producers p: model.Producers.Add(p); break;
+                    case Suppliers s: model.Suppliers.Add(s); break;
+                    case Roles r: model.Roles.Add(r); break;
+                    case PaymentStates ps: model.PaymentStates.Add(ps); break;
+                }
+            }
+            model.SaveChanges();
+        }
+
+
+
+        private void CreateLabel(Field field, int j)
+        {
+            var rowDefinition = new RowDefinition();
+            rowDefinition.Height = GridLength.Auto;
+            ContainerGrid.RowDefinitions.Add(rowDefinition);
+
+            rowDefinition = new RowDefinition();
+            rowDefinition.Height = GridLength.Auto;
+            ContainerGrid.RowDefinitions.Add(rowDefinition);
+
+            TextBlock tb = new TextBlock();
+            tb.Text = field.title + ":";
+            tb.Margin = new Thickness(0, 0, 0, 5);
+            tb.TextWrapping = System.Windows.TextWrapping.Wrap;
+
+            Grid.SetRow(tb, j);
+            ContainerGrid.Children.Add(tb);
+        }
+
+        private void CreateControls()
+        {
+            int id = (int)GetValueFromItemByReflection(_currentItem, "id");
+
+            int j = 2;
+            foreach (Field field in _fields)
+            {
+                //Console.WriteLine("title: " + field.title);
+                //Console.WriteLine("name: " + field.name);
+                //Console.WriteLine("type: " + field.type);
+                //Console.WriteLine("nullable: " + field.nullable);
+                //Console.WriteLine("visible: " + field.visible);
+                //Console.WriteLine("maxlength: " + field.maxlength);
+                //Console.WriteLine();
+
+                if (field.visible)
+                {
+
+                    switch (field.type)
+                    {
+                        case "string":
+                        case "int":
+
+                            CreateLabel(field, j++);
+
+                            TextBox tbox = new TextBox();
+                            SetControlProperties(tbox);
+                            if (field.type == "string" && field.maxlength != null)
+                            {
+                                tbox.MaxLength = (int)field.maxlength;
+                            }
+
+                            Binding binding = new Binding(field.name);
+                            tbox.SetBinding(TextBox.TextProperty, binding);
+
+                            Grid.SetRow(tbox, j++);
+                            ContainerGrid.Children.Add(tbox);
+
+                            break;
+
+                        case "date":
+
+                            // Если это новая заявка (а дата только в заявках), то выключаем дату окончания работ
+                            if (id == 0 && field.name == "dateto") continue;
+
+                            CreateLabel(field, j++);
+                            DatePicker dp = new DatePicker();
+                            SetControlProperties(dp);
+
+                            binding = new Binding(field.name);
+                            dp.SetBinding(DatePicker.SelectedDateProperty, binding);
+
+                            Grid.SetRow(dp, j++);
+                            ContainerGrid.Children.Add(dp);
+
+                            break;
+
+                        case "foreignkey":
+
+                            CreateLabel(field, j++);
+
+                            ComboBox cb = new ComboBox();
+                            SetControlProperties(cb);
+
+                            if (field.itemsource == "Users")
+                            {
+                                cb.ItemsSource = AppConnect.model01.Users.ToList();
+                                cb.DisplayMemberPath = "userinfo";
+                            }
+                            else if (field.itemsource == "DoneStates")
+                            {
+                                cb.ItemsSource = AppConnect.model01.DoneStates.ToList();
+                                cb.DisplayMemberPath = "title";
+                            }
+                            else if (field.itemsource == "PaymentStates")
+                            {
+                                cb.ItemsSource = AppConnect.model01.PaymentStates.ToList();
+                                cb.DisplayMemberPath = "title";
+                            }
+                            cb.SetBinding(ComboBox.SelectedItemProperty, new Binding(field.itemsource));
+
+                            Grid.SetRow(cb, j++);
+                            ContainerGrid.Children.Add(cb);
+
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void SetControlProperties(Control c)
+        {
+            c.Width = 500;
+            c.HorizontalAlignment = HorizontalAlignment.Left;
+            c.Margin = new Thickness(0, 0, 0, 5);
+
+            if (c is TextBox)
+            {
+                c.MinHeight = 30;
+                c.Padding = new Thickness(0, 5, 0, 5);
+                (c as TextBox).TextWrapping = TextWrapping.WrapWithOverflow;
+            }
+            if (c is DatePicker)
+            {
+                c.Height = 30;
+                c.Padding = new Thickness(2, 5, 0, 0);
+            }
+            if (c is ComboBox)
+            {
+                c.Height = 29;
+                c.Padding = new Thickness(3, 6, 0, 0);
             }
         }
     }

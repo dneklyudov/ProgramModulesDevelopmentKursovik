@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="cb84e688baeb45a2ab1241204eb684e3" Name="Diagram1">
+      <Diagram DiagramId="f5fab42fe68545ecb69d8c9b90edcf9b" Name="Diagram1">
         <EntityTypeShape EntityType="CompFirmModel.Carts" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.CatItems" Width="1.5" PointX="3" PointY="2.875" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.CatPrices" Width="1.5" PointX="5.25" PointY="7" IsExpanded="true" />
@@ -14,11 +14,12 @@
         <EntityTypeShape EntityType="CompFirmModel.EdIzm" Width="1.5" PointX="0.75" PointY="8.125" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Orders" Width="1.5" PointX="3" PointY="19.5" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.OrdersItems" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="CompFirmModel.PaymentState" Width="1.5" PointX="0.75" PointY="19.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.PaymentStates" Width="1.5" PointX="0.75" PointY="19.125" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Producers" Width="1.5" PointX="0.75" PointY="10.5" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Requests" Width="1.5" PointX="6" PointY="19.25" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Roles" Width="1.5" PointX="1.5" PointY="26.625" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Suppliers" Width="1.5" PointX="0.75" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="CompFirmModel.Users" Width="1.5" PointX="0.75" PointY="21.75" IsExpanded="true" />
         <AssociationConnector Association="CompFirmModel.FK_Carts_CatItems" ManuallyRouted="false" />
         <AssociationConnector Association="CompFirmModel.FK_Carts_Users" ManuallyRouted="false" />
@@ -34,7 +35,7 @@
         <AssociationConnector Association="CompFirmModel.FK_Orders_PaymentState" ManuallyRouted="false" />
         <AssociationConnector Association="CompFirmModel.FK_Orders_Users" ManuallyRouted="false" />
         <AssociationConnector Association="CompFirmModel.FK_OrdersItems_Orders" ManuallyRouted="false" />
-        <AssociationConnector Association="CompFirmModel.FK_Requests_PaymentState" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Requests_PaymentStates" ManuallyRouted="false" />
         <AssociationConnector Association="CompFirmModel.FK_Requests_Users" ManuallyRouted="false" />
         <AssociationConnector Association="CompFirmModel.FK_Users_Roles" ManuallyRouted="false" />
       </Diagram>

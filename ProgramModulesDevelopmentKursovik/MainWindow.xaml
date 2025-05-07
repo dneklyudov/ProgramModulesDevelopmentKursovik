@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgramModulesDevelopmentKursovik"
         mc:Ignorable="d"
-        Title="Компьютерная фирма" Icon="/Resources/logo.png" Height="551" Width="800">
+        Title="Компьютерная фирма" Icon="/Resources/logo.png" Height="701" Width="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="1"/>
-            <RowDefinition Height="500*"/>
+            <RowDefinition Height="650*"/>
         </Grid.RowDefinitions>
 
         <Grid>

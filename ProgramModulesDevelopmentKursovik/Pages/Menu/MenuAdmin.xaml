@@ -10,7 +10,7 @@
 
 	<StackPanel>
         <TextBlock Text="Заказы и заявки" FontSize="14" Margin="0,5"/>
-        <Button Style="{StaticResource Menu}" Content="Заявки на ремонт" Click="ButtonMenu_Click"/>
+        <Button x:Name="btnRequests" Style="{StaticResource Menu}" Content="Заявки на ремонт" Click="ButtonMenu_Click"/>
         <TextBlock Text="Справочники" FontSize="14" Margin="0,5"/>
         <Button Style="{StaticResource Menu}" Content="Единицы измерения" Click="ButtonMenu_Click"/>
         <Button Style="{StaticResource Menu}" Content="Страны" Click="ButtonMenu_Click"/>
@@ -19,5 +19,9 @@
         <Button Style="{StaticResource Menu}" Content="Роли" Click="ButtonMenu_Click"/>
         <Button Style="{StaticResource Menu}" Content="Статусы платежей" Click="ButtonMenu_Click"/>
         <Button Style="{StaticResource Menu}" Content="Статусы заказов" Click="ButtonMenu_Click"/>
+        
+        <TextBlock Text="Об авторе" FontSize="14" Margin="0,5,0,0"/>
+        <Image x:Name="imgQr" Width="120" Height="120"/>
     </StackPanel>
+    
 </Page>

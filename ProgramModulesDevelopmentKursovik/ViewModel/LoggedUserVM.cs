@@ -18,6 +18,17 @@ namespace ProgramModulesDevelopmentKursovik.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                OnPropertyChanged("Id");
+            }
+        }
+
         private String _fio;
         public String Fio
         {

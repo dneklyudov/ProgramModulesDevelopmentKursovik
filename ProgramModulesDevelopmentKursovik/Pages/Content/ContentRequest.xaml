@@ -49,14 +49,11 @@
         <TextBlock Grid.Row="0" Style="{StaticResource Title}" Margin="0,0,0,15">Заявки на ремонт</TextBlock>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,15">
-            <Button x:Name="BtnAdd" Height="30" Width="80" Margin="0">Добавить</Button>
+            <Button x:Name="BtnAdd" Height="30" Width="80" Margin="0" Click="BtnAdd_Click">Добавить</Button>
             <TextBlock Text="Поиск:" Margin="50,7,5,0"/>
             <TextBox x:Name="TextSearch" Margin="0,0,0,0" Height="30" Width="100" Padding="5,5,5,0" TextChanged="TextSearch_TextChanged"/>
             <ComboBox x:Name="ComboFilterByUser" Width="210" Height="30" Padding="10,6,5,0" Margin="10,0,0,0" SelectionChanged="ComboFilterByUser_SelectionChanged" />
-
-            <!--ComboBox x:Name="ComboFilter"  Width="Auto" Height="30" Margin="10,0,0,0" />
-            <ComboBox x:Name="ComboSort"  Margin="10,0,10,0" Height="30" Width="Auto"/-->
-         </StackPanel>
+        </StackPanel>
 
         <ListView x:Name="listRequests" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2" GridViewColumnHeader.Click="listRequestsHeader_Click" >
             <ListView.View>
@@ -66,25 +63,24 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="BtnChangeInTable" Height="26" Width="70">Изменить</Button>
-                                    <Button x:Name="BtnRemoveInTable" Height="26" Width="70" Margin="5,0,0,0">Удалить</Button>
+                                    <Button x:Name="BtnChangeInTable" Height="26" Width="70" Click="BtnChangeInTable_Click">Изменить</Button>
+                                    <Button x:Name="BtnRemoveInTable" Height="26" Width="70" Margin="5,0,0,0" Click="BtnRemoveInTable_Click">Удалить</Button>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=title}" Header="Заголовок" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=description}" Header="Описание" Width="Auto"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=description}" Header="Описание" Width="200"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=dateopen}" Header="Дата открытия" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=dateclose}" Header="Дата закрытия" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=userinfo}" Header="Пользователь" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=DoneStates.title}" Header="Статус заявки" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=PaymentState.title}" Header="Статус оплаты" Width="Auto"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=PaymentStates.title}" Header="Статус оплаты" Width="Auto"/>
                 </GridView>
             </ListView.View>
         </ListView>
-
         <TextBlock x:Name="tbCounter" Grid.Row="4" Height="30" Padding="10,6" VerticalAlignment="Center"/>
-        <Button x:Name="btnToPDF" Content="PDF" Grid.Row="4" Height="30" Width="100" VerticalAlignment="Center" Margin="10,10,10,0" />
+        <Button x:Name="btnToPDF" Content="PDF" Grid.Row="4" Height="30" Width="100" VerticalAlignment="Center" Margin="10,10,10,0" Click="btnToPDF_Click"/>
 
     </Grid>
 </Page>

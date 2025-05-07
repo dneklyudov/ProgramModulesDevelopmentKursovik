@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ProgramModulesDevelopmentKursovik.Pages;
 using ProgramModulesDevelopmentKursovik.ViewModel;
+using ZXing;
+using System.Drawing;
+using System.Windows.Controls.Primitives;
+using ProgramModulesDevelopmentKursovik.ApplicationData;
 
 namespace ProgramModulesDevelopmentKursovik.Pages.Menu
 {
@@ -26,14 +31,40 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Menu
         public MenuAdmin()
         {
             InitializeComponent();
+
+            var writer = new BarcodeWriter
+            {
+                Format = BarcodeFormat.QR_CODE,
+                Options = new ZXing.Common.EncodingOptions
+                {
+                    Width = 120,
+                    Height = 120
+                }
+            };
+            var result = writer.Write(@"https://dneklyudov.ru/");
+            var bitmap = new BitmapImage();
+            using (var memoryStream = new MemoryStream())
+            {
+                result.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                memoryStream.Position = 0;
+                bitmap.BeginInit();
+                bitmap.StreamSource = memoryStream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+            }
+            imgQr.Source = bitmap;
+
+            ButtonMenu_Click(btnRequests, null);
         }
+
 
         private void ButtonMenu_Click(object sender, RoutedEventArgs e)
         {
             MenuHelper.SetStyleOfActiveMenuButton(sender);
             if ((sender as Button).Content.ToString() == "Заявки на ремонт")
             {
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.ContentRequests();
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.ContentRequests(1);
             }
             else if ((sender as Button).Content.ToString() == "Единицы измерения")
             {
@@ -57,7 +88,7 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Menu
             }
             else if ((sender as Button).Content.ToString() == "Статусы платежей")
             {
-                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("PaymentState");
+                ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Main = new Pages.Content.Spravochnik("PaymentStates");
             }
             else if ((sender as Button).Content.ToString() == "Статусы заказов")
             {

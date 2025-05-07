@@ -1,0 +1,208 @@
+{
+    "tEdIzm": {
+        "title": "Единицы измерения",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 10
+            }
+        ]
+    },
+    "tCountries": {
+        "title": "Страны",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 30
+            }
+        ]
+    },
+    "tProducers": {
+        "title": "Производители",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 50
+            }
+        ]
+    },
+    "tSuppliers": {
+        "title": "Поставщики",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 50
+            }
+        ]
+    },
+    "tRoles": {
+        "title": "Роли",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 50
+            }
+        ]
+    },
+    "tDoneStates": {
+        "title": "Статусы заказов",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 30
+            }
+        ]
+    },
+    "tPaymentStates": {
+        "title": "Статусы оплаты",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 30
+            }
+        ]
+    },
+    "tRequests": {
+        "title": "Заявки на ремонт",
+        "fields": [
+            {
+                "name": "id",
+                "type": "int",
+                "require": true,
+                "title": "ID", 
+                "visible": false
+            },
+            {
+                "name": "title",
+                "type": "string",
+                "require": true,
+                "title": "Название", 
+                "visible": true,
+                "maxlength": 50
+            },
+            {
+                "name": "description",
+                "type": "string",
+                "require": true,
+                "title": "Описание", 
+                "visible": true,
+                "maxlength": 255
+            },
+            {
+                "name": "datefrom",
+                "type": "date",
+                "require": true,
+                "title": "Дата начала работ", 
+                "visible": true
+            },
+            {
+                "name": "dateto",
+                "type": "date",
+                "require": false,
+                "title": "Дата окончания работ", 
+                "visible": true
+            },
+            {
+                "name": "user_id",
+                "type": "foreignkey",
+                "itemsource": "Users",
+                "require": true,
+                "title": "Пользователь", 
+                "visible": true
+            },
+            {
+                "name": "donestate_id",
+                "type": "foreignkey",
+                "itemsource": "DoneStates",
+                "require": true,
+                "title": "Статус заказа", 
+                "visible": true
+            },
+            {
+                "name": "paymentstate_id",
+                "type": "foreignkey",
+                "itemsource": "PaymentStates",
+                "require": true,
+                "title": "Статус оплаты", 
+                "visible": true
+            }
+        ]
+    }
+}

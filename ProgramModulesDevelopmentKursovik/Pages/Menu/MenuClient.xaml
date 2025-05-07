@@ -5,10 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ProgramModulesDevelopmentKursovik.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="160" Width="140"
+      d:DesignHeight="450" d:DesignWidth="165" Width="140"
       Title="MenuClient">
 
-    <StackPanel Margin="10">
-        <Button Style="{StaticResource Menu}" Click="ButtonMenu_Click" Content="Заявки на ремонт"/>
+    <StackPanel>
+        <Button x:Name="btnRequests" Style="{StaticResource Menu}" Click="ButtonMenu_Click" Content="Заявки на ремонт"/>
     </StackPanel>
 </Page>

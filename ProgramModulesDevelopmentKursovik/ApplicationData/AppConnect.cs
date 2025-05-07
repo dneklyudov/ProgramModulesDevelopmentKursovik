@@ -8,6 +8,6 @@ namespace ProgramModulesDevelopmentKursovik.ApplicationData
 {
     internal class AppConnect
     {
-        public static CompFirmEntities1 model01;
+        public static CompFirmEntities model01;
     }
 }
