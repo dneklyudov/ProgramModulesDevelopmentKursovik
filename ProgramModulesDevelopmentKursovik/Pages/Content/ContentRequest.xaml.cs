@@ -44,9 +44,9 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Content
             var users = AppConnect.model01.Users.OrderBy(x => x.email);
             ComboFilterByUser.Items.Add("Фильтровать по пользователю");
 
+            // Если пользователь - клиент, то в фильтр добавляем только его
             if (clientRoleId == 3)
             {
-                // Почему тут не работает?
                 var lu = ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM);
                 foreach (var item in users)
                 {
@@ -63,6 +63,7 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Content
             {
                 foreach (var item in users)
                 {
+                    // Если пользователь - админ или менеджер, то в фильтр добавляем только клиентов
                     if (item.Roles.id == 3)
                         ComboFilterByUser.Items.Add(item.userinfo);
                 }
@@ -140,7 +141,7 @@ namespace ProgramModulesDevelopmentKursovik.Pages.Content
             }
 
         }
-                    private void listRequestsHeader_Click(object sender, RoutedEventArgs e)
+        private void listRequestsHeader_Click(object sender, RoutedEventArgs e)
         {
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
             ListSortDirection direction;

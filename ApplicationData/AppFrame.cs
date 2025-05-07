@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace ProgramModulesDevelopmentKursovik.ApplicationData
 {
-    internal class AppConnect
+    internal class AppFrame
     {
-        public static CompFirmEntities1 model01;
+        public static Frame frameMain;
+        public static Frame frameMenu;
     }
 }

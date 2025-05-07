@@ -29,9 +29,9 @@ namespace ProgramModulesDevelopmentKursovik.Pages
             InitializeComponent();
         }
 
-        private void SetLoggedUserValues(int id, String fio, String role, object menu, object main)
+        private void SetLoggedUserValues(String fio, String role, object menu, object main)
         {
-            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Id = id;
+            
             ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Fio = fio;
             ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Role = role;
             ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Menu = (Page)menu;
@@ -57,8 +57,8 @@ namespace ProgramModulesDevelopmentKursovik.Pages
                     {
                         case 1:
                             // MessageBox.Show("Здравствуйте, " + userObj.name + " " + userObj.patronymic + "! Вы успешно авторизовались как администратор.", "Успешная авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
+                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Id = userObj.id;
                             SetLoggedUserValues(
-                                userObj.id,
                                 userObj.name + " " + userObj.patronymic + " " + userObj.surname, 
                                 "Администратор", 
                                 new Pages.Menu.MenuAdmin(),
@@ -67,8 +67,8 @@ namespace ProgramModulesDevelopmentKursovik.Pages
                             break;
                         case 2:
                             // MessageBox.Show("Здравствуйте, " + userObj.name + " " + userObj.patronymic + "! Вы успешно авторизовались как менеджер.", "Успешная авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
+                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Id = userObj.id;
                             SetLoggedUserValues(
-                                userObj.id,
                                 userObj.name + " " + userObj.patronymic + " " + userObj.surname,
                                 "Менеджер",
                                 new Pages.Menu.MenuManager(),
@@ -77,8 +77,8 @@ namespace ProgramModulesDevelopmentKursovik.Pages
                             break;
                         case 3:
                             // MessageBox.Show("Здравствуйте, " + userObj.name + " " + userObj.patronymic + "! Вы успешно авторизовались как заказчик.", "Успешная авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
+                            ((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Id = userObj.id;
                             SetLoggedUserValues(
-                                userObj.id,
                                 userObj.name + " " + userObj.patronymic + " " + userObj.surname,
                                 "Заказчик",
                                 new Pages.Menu.MenuClient(),
@@ -89,6 +89,7 @@ namespace ProgramModulesDevelopmentKursovik.Pages
                             MessageBox.Show("Данные не обнаружены", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Warning);
                             break;
                     }
+                    Console.WriteLine(((Application.Current.MainWindow as MainWindow).DataContext as LoggedUserVM).Id);
                 }
             }
             catch (Exception Ex)

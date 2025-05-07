@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="29c857234cd8412f86dd840fa3ccc637" Name="Diagram1">
+        <EntityTypeShape EntityType="CompFirmModel.Carts" Width="1.5" PointX="11" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.CatItems" Width="1.5" PointX="6.125" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.CatPrices" Width="1.5" PointX="8.5" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.CatSections" Width="1.5" PointX="1" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Countries" Width="1.5" PointX="1" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.DoneStates" Width="1.5" PointX="11" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.EdIzm" Width="1.5" PointX="1.25" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Orders" Width="1.5" PointX="8.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.OrdersItems" Width="1.5" PointX="10.875" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.PaymentStates" Width="1.5" PointX="3.625" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Producers" Width="1.5" PointX="1.125" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Requests" Width="1.5" PointX="8.75" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Roles" Width="1.5" PointX="3.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Suppliers" Width="1.5" PointX="3.625" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CompFirmModel.Users" Width="1.5" PointX="6" PointY="5.875" IsExpanded="true" />
+        <AssociationConnector Association="CompFirmModel.FK_Carts_CatItems" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Carts_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_CatItems_CatSections" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_CatItems_Countries" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_CatItems_EdIzm" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_CatItems_Producers" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_CatItems_Suppliers" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_CatPrices_CatItems" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_OrdersItems_CatItems" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Orders_DoneStates" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Requests_DoneStates" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Orders_PaymentState" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Orders_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_OrdersItems_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Requests_PaymentStates" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Requests_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="CompFirmModel.FK_Users_Roles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
